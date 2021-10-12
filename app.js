@@ -1,5 +1,6 @@
 const fs = require("fs");
 
+// Do nothing yet
 function Main() {
   const nesFile = fs.readFileSync("./rom/game.nes");
   console.log(typeof nesFile);
@@ -8,6 +9,6 @@ function Main() {
   console.log(typedArray[0].toString(16));
 
   const imageFile = typedArray.slice(262160);
-  fs.writeFileSync("teste.tiff", nesFile.slice(262160));
+  //fs.writeFileSync("./testes/teste.tiff", nesFile.slice(262160));
 }
 Main();
