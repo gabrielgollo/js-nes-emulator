@@ -11,6 +11,14 @@ class Bus {
     this.PGR_ROM = PGR_ROM;
   }
 
+  read(addr) {
+    return this.ram[addr];
+  }
+
+  write(addr, value) {
+    this.ram[addr] = value;
+  }
+
   start() {
     this.CPU.interpret(this.PGR_ROM);
   }
