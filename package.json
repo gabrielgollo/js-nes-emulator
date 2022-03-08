@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles --coverage --forceExit",
     "start": "node app.js",
@@ -11,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^27.4.1",
     "jest": "^27.2.5",
     "nodemon": "^2.0.13"
   },

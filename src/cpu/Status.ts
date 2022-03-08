@@ -7,8 +7,9 @@ export interface StatusRegister {
     U: number;
     V: number;
     N: number;
-    setFlag(flag: string, value: number): void;
-  }
+}
+
+type StatusFlags = keyof StatusRegister;
 export  class Status {
     status: StatusRegister;
     constructor() {
@@ -26,7 +27,7 @@ export  class Status {
   
     
   
-    setFlag(flag, value) {
+    setFlag(flag: StatusFlags, value: boolean | number) {
       if (value) {
         this[flag] = 1;
       } else {
@@ -41,14 +42,14 @@ export  class Status {
     get flags() {
       const flags =
         "0b" +
-        this.N +
-        this.V +
-        this.U +
-        this.B +
-        this.D +
-        this.I +
-        this.Z +
-        this.C;
+        this.status.N +
+        this.status.V +
+        this.status.U +
+        this.status.B +
+        this.status.D +
+        this.status.I +
+        this.status.Z +
+        this.status.C;
       return Number(flags);
     }
   

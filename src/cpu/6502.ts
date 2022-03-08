@@ -1,4 +1,5 @@
-import { StatusRegister } from "./Status";
+import opCodes from "./instructions/opcodes";
+import { StatusRegister, Status } from "./Status";
 
 export class CPU {
   memory: Uint16Array;
@@ -7,8 +8,12 @@ export class CPU {
   index_Y: number;
   stck_pointer: number;
   p_counter: number;
-  status: StatusRegister;
+  status: Status;
   interrupt: boolean;
+  instructions: { [key:string]: (PGR_ROM: number) => void };
+  bus: { [key:string]: any };
+  // interpret: (PGR_ROM: number) => void;
+
   constructor(this_bus) {
     // Registers
     this.memory = this.bus.ram; // 16 bits memory
@@ -20,43 +25,10 @@ export class CPU {
     this.status = new Status();
     this.interrupt = false; // flag to interrupt loop
 
-    this.instructions = {
-      0: () => {
-        // BRK -- Force Break - 1 byte - 7 cycles
-        this.p_counter += 1;
-        this.status.setFlag("I", 1);
-        this.status.setFlag("B", 1);
-        this.stck_pointer = this.p_counter;
-        this.p_counter = this.read(0xfffe);
-        this.p_counter += this.read(0xffff) << 8;
-        this.setInterrupt();
-      },
-      169: (PGR) => {
-        // LDA -- Load Accumulator - 2 bytes - 2 Cycles
-        this.p_counter += 1;
-        const param = PGR[this.p_counter];
-        this.accumulator = param;
-
-        this.status.setFlag("Z", this.accumulator === 0x0);
-        this.status.setFlag("N", this.accumulator & 0x80);
-      },
-      170: () => {
-        // TAX Transfer Accumulator to X - 1 byte - 2 Cycles
-        this.p_counter += 1;
-        this.index_X = this.accumulator;
-        this.status.setFlag("Z", this.index_X === 0x0);
-        this.status.setFlag("N", (this.index_X & 0x80) !== 0);
-      },
-      232: () => {
-        // INX Increment X Index - 1 byte - 2 Cycles
-        this.index_X += 1;
-        this.status.setFlag("Z", this.index_X === 0x0);
-        this.status.setFlag("N", (this.index_X & 0x80) !== 0);
-      },
-    };
+    this.instructions = opCodes
   }
 
-  read(address) {
+  read(address: number) {
     return this.memory[address];
   }
 
@@ -87,14 +59,14 @@ export class CPU {
     this.status.resetFlags(); // NV1BDIZC
   }
 
-  interpret(PGR_ROM) {
+  interpret(PGR_ROM: Uint8Array) {
     this.printCpuRegisters();
     //console.log(`decimal-> ${numero} hexa-> ${numero.toString(16)}`);
     while (this.p_counter < PGR_ROM.length) {
       try {
         let opcode = Number(PGR_ROM[this.p_counter]);
         console.log(`instruction: ${opcode.toString(16)}`);
-        this.instructions[opcode](PGR_ROM);
+        this.instructions[opcode].bind(this)(PGR_ROM);
       } catch (error) {
         console.log("Failed to load opcode");
       }
