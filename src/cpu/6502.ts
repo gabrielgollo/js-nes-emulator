@@ -1,56 +1,17 @@
-class Status {
-  constructor() {
-    this.C = 0; // Carry Bit
-    this.Z = 0; // Zero
-    this.I = 0; // Disable Interrupts
-    this.D = 0; // Decimal mode
-    this.B = 0; // Break
-    this.U = 1; // Unused
-    this.V = 0; // Overflow
-    this.N = 0; // Negative
-  }
-  setFlag(flag, value) {
-    if (value) {
-      this[flag] = 1;
-    } else {
-      this[flag] = 0;
-    }
-  }
+import { StatusRegister } from "./Status";
 
-  getFlag(flag) {
-    return this[flag];
-  }
-
-  get flags() {
-    const flags =
-      "0b" +
-      this.N +
-      this.V +
-      this.U +
-      this.B +
-      this.D +
-      this.I +
-      this.Z +
-      this.C;
-    return Number(flags);
-  }
-
-  resetFlags() {
-    this.setFlag("N", 0);
-    this.setFlag("V", 0);
-    this.setFlag("U", 1);
-    this.setFlag("B", 0);
-    this.setFlag("D", 0);
-    this.setFlag("I", 0);
-    this.setFlag("Z", 0);
-    this.setFlag("C", 0);
-  }
-}
-
-class CPU {
-  constructor() {
+export class CPU {
+  memory: Uint16Array;
+  accumulator: number;
+  index_X: number;
+  index_Y: number;
+  stck_pointer: number;
+  p_counter: number;
+  status: StatusRegister;
+  interrupt: boolean;
+  constructor(this_bus) {
     // Registers
-    this.memory = new Array(0xffff); // 16 bits memory
+    this.memory = this.bus.ram; // 16 bits memory
     this.accumulator = 0x0;
     this.index_X = 0x0;
     this.index_Y = 0x0;
@@ -143,5 +104,3 @@ class CPU {
     }
   }
 }
-
-module.exports = new CPU();
