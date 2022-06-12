@@ -1,16 +1,7 @@
-export interface StatusRegister {
-    C: number;
-    Z: number;
-    I: number;
-    D: number;
-    B: number;
-    U: number;
-    V: number;
-    N: number;
-}
+import { CPUStatus, StatusRegister } from "../interfaces/status";
 
 type StatusFlags = keyof StatusRegister;
-export  class Status {
+export class CPU6502Status implements CPUStatus {
     status: StatusRegister;
     constructor() {
       this.status = {
@@ -24,19 +15,17 @@ export  class Status {
         N: 0
       } 
     }
-  
     
-  
     setFlag(flag: StatusFlags, value: boolean | number) {
       if (value) {
-        this[flag] = 1;
+        this.status[flag] = 1;
       } else {
-        this[flag] = 0;
+        this.status[flag] = 0;
       }
     }
   
-    getFlag(flag) {
-      return this[flag];
+    getFlag(flag: StatusFlags) {
+      return this.status[flag];
     }
   
     get flags() {
@@ -64,3 +53,5 @@ export  class Status {
       this.setFlag("C", 0);
     }
   }
+
+  export default CPU6502Status;

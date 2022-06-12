@@ -1,5 +1,5 @@
 import { CPU } from '../../src/cpu/6502';
-const cpu = new CPU({ ram: new Uint16Array(0xFFFF) });
+const cpu = new CPU(new Uint8Array(0xFFFF));
 
 describe("CPU", () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe("CPU", () => {
     try {
       cpu.interpret(PROGRAM_ROM);
     } catch (e) {
-      //expect(e).toBeUndefined();
+      expect(e).toBeUndefined();
     }
     expect(cpu.accumulator).toBe(0xc0);
     expect(cpu.index_X).toBe(0xc0);

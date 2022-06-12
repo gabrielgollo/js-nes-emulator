@@ -1,4 +1,4 @@
-const Cpu6502 = require("./Cpu6502");
+import Cpu6502 from"./Cpu6502";
 
 class Bus {
   constructor() {

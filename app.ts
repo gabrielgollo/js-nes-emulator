@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 // Do nothing yet
 function Main() {
