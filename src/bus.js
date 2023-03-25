@@ -2,8 +2,8 @@ const Cpu6502 = require("./Cpu6502");
 
 class Bus {
   constructor() {
-    this.CPU = Cpu6502;
-    this.ram = new Int8Array(64 * 1024);
+    this.ram = new Uint16Array(0xFFFF);
+    this.CPU = Cpu6502(this.ram);
     this.PGR_ROM = new Uint8Array([0xa9, 0xc0, 0xaa]);
   }
 
